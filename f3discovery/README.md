@@ -14,4 +14,12 @@ If this fails, run `wsl --shutdown`. If issues persist, try updating WSL with `w
 If you get a `the target distro is not running` error, set your default distro to the desired on with `wsl --setdefault distro_name`  
 If `udevadm control --reload-rules` throws an error, try running `/lib/systemd/systemd-udevd --daemon`.  
 If the permissions are wrong for the STM32F3 after refreshing the udev rules, disconnect and reconnect the controller.  
-The command for gdb on my WSL2-Ubuntu machine is `gdb-multiarch -q -ex "target remote :3333" target/thumbv7em-none-eabihf/debug/led-roulette`
+The command for gdb on my WSL2-Ubuntu machine is `gdb-multiarch -q -ex "target remote :3333" target/thumbv7em-none-eabihf/debug/led-roulette`  
+
+If we want to observe the ITM (Instrumentation Trace Macrocell), we can do so by running `itmdump` in a separate terminal. Note that `openocd` also needs to be running or things won't work properly. Also, `openocd` must be running in the same director (i.e. `tmp`) as `itmdump`. Run `itmdump` with:
+```
+touch itm.txt
+itmdump -F -f itm.txt
+```
+`iprintln!` can be used for logging to the terminal, neat! See the `main.rs` in `.../06-hello-world/src` for a simple example!
+START HERE `https://docs.rust-embedded.org/discovery/f3discovery/06-hello-world/panic.html`
