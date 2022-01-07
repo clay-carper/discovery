@@ -22,4 +22,6 @@ touch itm.txt
 itmdump -F -f itm.txt
 ```
 `iprintln!` can be used for logging to the terminal, neat! See the `main.rs` in `.../06-hello-world/src` for a simple example!
-START HERE `https://docs.rust-embedded.org/discovery/f3discovery/06-hello-world/panic.html`
+START HERE `https://docs.rust-embedded.org/discovery/f3discovery/06-hello-world/panic.html`  
+We can output a `degub.txt` using `cargo objdump --bin registers -- -d --no-show-raw-insn --print-imm-hex --source > debug.txt`
+We can output a `release.txt` using `cargo objdump --bin registers --release -- -d --no-show-raw-insn --print-imm-hex > release.txt`
