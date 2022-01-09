@@ -25,3 +25,4 @@ itmdump -F -f itm.txt
 START HERE `https://docs.rust-embedded.org/discovery/f3discovery/06-hello-world/panic.html`  
 We can output a `degub.txt` using `cargo objdump --bin registers -- -d --no-show-raw-insn --print-imm-hex --source > debug.txt`
 We can output a `release.txt` using `cargo objdump --bin registers --release -- -d --no-show-raw-insn --print-imm-hex > release.txt`
+[STARTHERE](https://docs.rust-embedded.org/discovery/f3discovery/10-serial-communication/loopbacks.html)
