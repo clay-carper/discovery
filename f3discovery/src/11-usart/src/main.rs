@@ -2,53 +2,48 @@
 #![no_main]
 #![no_std]
 
-use core::fmt::{self, Write};
-
-#[allow(unused_imports)]
-use aux11::{entry, iprint, iprintln, usart1};
-
-macro_rules! uprint {
-    ($serial:expr, $($arg:tt)*) => {
-        $serial.write_fmt(format_args!($($arg)*)).ok()
-    };
-}
-
-macro_rules! uprintln {
-    ($serial:expr, $fmt:expr) => {
-        uprint!($serial, concat!($fmt, "\n"))
-    };
-    ($serial:expr, $fmt:expr, $($arg:tt)*) => {
-        uprint!($serial, concat!($fmt, "\n"), $($arg)*)
-    };
-}
-
-struct SerialPort {
-    usart1: &'static mut usart1::RegisterBlock,
-}
-
-impl fmt::Write for SerialPort {
-    fn write_str(&mut self, s: &str) -> fmt::Result {
-        for byte in b"The quick brown fox jumps over the lazy dog.".iter() {
-            // wait until it's safe to write to TDR
-            while self.usart1.isr.read().txe().bit_is_clear() {}
-            // Write a byte
-            self
-                .usart1
-                .tdr
-                .write(|w| w.tdr().bits(u16::from(*byte)));
-        }
-        Ok(())
-    }
-}
+#allow(unused_imports)
+use aux1::{entry, iprint, iprintln};
+use heapless::Vec;
 
 #[entry]
 fn main() -> ! {
-    let (usart1, mono_timer, mut itm) = aux11::init();
+    let (usart1, _mono_timer, _itm) = aux11::init());
 
-    let mut serial = SerialPort { usart1 };
+    // A buffer with 32 bytes of capacity
+    let mut buffer: Vec<u8, 32> = Vec::new();
 
-    uprintln!(serial, "The answer {}", 40 + 2);
-    
+    loop {
+        buffer.clear();
 
-    loop {}
+        loop {
+            while usart1.isr.read().rxne().bit_is_clear() {}
+            let byte = usart1.rdr.read().rdr().bits() as u8;
+
+            if buffer.push(byte).is_err() {
+                // Buffer is full
+                for byte in b"error: buffer full\n\r" {
+                    while usart1.isr.read().txe().bit_is_clear() {}
+                    usart1
+                        .tdr
+                        .write(|w| w.tdr().bits(u16::from(*byte)));
+                }
+
+                break;
+            }
+
+            // Carriage return
+            if byte == 13 {
+                // Respond
+                for byte in buffer.iter().rev().chain(&[b'\n', b'\r']) {
+                    while usart1.isr.read().txe().bit_is_clear() {}
+                    usart1
+                        .tdr
+                        .write(|w| w.tdr().bits(u16::from(*byte)));
+                }
+
+                break;
+            }
+        }
+    }
 }
