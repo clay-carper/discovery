@@ -34,3 +34,8 @@ continue
 
 # Step from the trampoline code in entry into main
 step
+
+# Quit GDB without asking for y/n from the user
+define hook-quit
+    set confirm off
+end
