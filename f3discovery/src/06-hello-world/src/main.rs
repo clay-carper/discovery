@@ -7,9 +7,13 @@ use aux6::{entry, iprint, iprintln};
 
 #[entry]
 fn main() -> ! {
-    let mut itm = aux6::init();
 
-    iprintln!(&mut itm.stim[0], "Hello, world!");
+    panic!("Hello, world!");
 
-    loop {}
 }
+
+// Make sure the discovery board has the correct pins shorted (SWO <-> PB3) OR the SB10 solder bridge is connected
+// Run itmdump with the following:
+// `touch itm.txt`
+// `itmdump -F -f itm.txt
+// Make damn sure that `OpenOCD` and `itmdump` are running in the same directory (probably /tmp)
