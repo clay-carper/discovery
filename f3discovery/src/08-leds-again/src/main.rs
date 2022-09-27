@@ -8,7 +8,8 @@ use aux8::entry;
 fn main() -> ! {
     let (gpioe, rcc) = aux8::init();
 
-    // TODO initialize GPIOE
+    // enable the GPIOE peripheral, need the `iopeen` pin from the `ahbenr` register, needs to be set to `0`
+    rcc.ahbenr.write(|w| w.iopeen().set_bit());
 
     // Turn on all the LEDs in the compass
     gpioe.odr.write(|w| {
