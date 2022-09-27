@@ -11,6 +11,19 @@ fn main() -> ! {
     // enable the GPIOE peripheral, need the `iopeen` pin from the `ahbenr` register, needs to be set to `0`
     rcc.ahbenr.write(|w| w.iopeen().set_bit());
 
+    // configure the GPIOE pins to be digital outs
+
+    gpioe.moder.write(|w| {
+        w.moder8().output();
+        w.moder9().output();
+        w.moder10().output();
+        w.moder11().output();
+        w.moder12().output();
+        w.moder13().output();
+        w.moder14().output();
+        w.moder15().output()
+    });
+
     // Turn on all the LEDs in the compass
     gpioe.odr.write(|w| {
         w.odr8().set_bit();
