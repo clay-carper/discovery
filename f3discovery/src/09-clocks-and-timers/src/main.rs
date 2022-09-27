@@ -5,7 +5,7 @@ use aux9::{entry, switch_hal::OutputSwitch, tim6};
 
 #[inline(never)]
 fn delay(tim6: &tim6::RegisterBlock, ms: u16) {
-    // TODO implement this
+    for _ in 0..1_000 {}
 }
 
 #[entry]
