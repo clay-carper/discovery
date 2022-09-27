@@ -5,7 +5,10 @@ use aux9::{entry, switch_hal::OutputSwitch, tim6};
 
 #[inline(never)]
 fn delay(tim6: &tim6::RegisterBlock, ms: u16) {
-    for _ in 0..1_000 {}
+    const K: u16 = 3; // this value needs to be tweaked
+    for _ in 0..(K * ms) {
+        aux9::nop()
+    }
 }
 
 #[entry]
