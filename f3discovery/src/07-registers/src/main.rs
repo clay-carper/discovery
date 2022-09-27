@@ -49,3 +49,5 @@ fn main() -> ! {
 
     loop {}
 }
+
+// use `cargo objdump --bin registers -- -d --no-show-raw-insn --print-imm-hex --source > debug.txt` to dump a full release to help with troubleshooting =)
