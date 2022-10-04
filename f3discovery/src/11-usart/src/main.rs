@@ -10,6 +10,8 @@ fn main() -> ! {
 
     // Send a single character (one byte) by writing to the `TDR` register.
     // This causes the `USART` peripheral to send one byte of information through the serial interface
+    // Works as intended when using `next` to step through. However, both `continue` and running in 
+    // release mode give a jumbled string. Less than ideal, for sure.
     for byte in b"The quick brown fox jumps over the lazy dog.".iter() {
         usart1
             .tdr
