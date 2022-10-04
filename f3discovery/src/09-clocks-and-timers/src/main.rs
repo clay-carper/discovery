@@ -16,7 +16,19 @@ fn main() -> ! {
     let (leds, rcc, tim6) = aux9::init();
     let mut leds = leds.into_array();
 
-    // TODO initialize TIM6
+    // define pcs (prescaler) for the counter (1kHz = 8MHz / (psc + 1)) <=> (1 kHz = 8000 kHz / (psc + 1))
+    let pcs = 7_999;
+
+    // Timer initialization
+    // Power the `TIM6` bit to 1, in the APB1ENR register of the RCC register block
+    rcc.apb1enr.modify(|_, w| w.tim6en().set_bit());
+
+    // Configuration, we want the timer in OPM Select pulse mode
+    // CEN Keeps the counter disabled, for now
+    tim6.cr1.write(|w| w.opm().set_bit().cen().clear_bit());
+
+    // We'll have the timer operate at a frequency of 1 KHz to match the 1 millisecond unitary value of our delay function
+    tim6.psc.write(|w| w.psc().bits(psc));
 
     let ms = 50;
     loop {
