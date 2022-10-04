@@ -17,7 +17,7 @@ fn main() -> ! {
     let mut leds = leds.into_array();
 
     // define pcs (prescaler) for the counter (1kHz = 8MHz / (psc + 1)) <=> (1 kHz = 8000 kHz / (psc + 1))
-    let pcs = 7_999;
+
 
     // Timer initialization
     // Power the `TIM6` bit to 1, in the APB1ENR register of the RCC register block
@@ -28,7 +28,8 @@ fn main() -> ! {
     tim6.cr1.write(|w| w.opm().set_bit().cen().clear_bit());
 
     // We'll have the timer operate at a frequency of 1 KHz to match the 1 millisecond unitary value of our delay function
-    tim6.psc.write(|w| w.psc().bits(psc));
+    // define pcs (prescaler) for the counter (1kHz = 8MHz / (psc + 1)) <=> (1 kHz = 8000 kHz / (psc + 1)) => psc = 7999
+    tim6.psc.write(|w| w.psc().bits(7_999));
 
     let ms = 50;
     loop {
