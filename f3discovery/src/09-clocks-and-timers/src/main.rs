@@ -26,9 +26,6 @@ fn main() -> ! {
     let (leds, rcc, tim6) = aux9::init();
     let mut leds = leds.into_array();
 
-    // define pcs (prescaler) for the counter (1kHz = 8MHz / (psc + 1)) <=> (1 kHz = 8000 kHz / (psc + 1))
-
-
     // Timer initialization
 
     // Power the `TIM6` bit to 1, in the APB1ENR register of the RCC register block
