@@ -13,9 +13,11 @@ fn main() -> ! {
     
     // Send the string
     for byte in b"The quick brown fox jumps over the lazy dog.".iter() {
+        while usart1.isr.read().txe().bit_is_clear() {} // Use the TXE flag of the ISR status register to slow things down
+
         usart1
             .tdr
-            .write(|w| w.tdr().bits(u16::from(*byte)) );
+            .write(|w| w.tdr().bits(u16::from(*byte)));
     }
     let elapsed = instant.elapsed(); // in ticks
 
