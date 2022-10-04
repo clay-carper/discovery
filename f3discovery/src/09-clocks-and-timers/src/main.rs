@@ -5,10 +5,20 @@ use aux9::{entry, switch_hal::OutputSwitch, tim6};
 
 #[inline(never)]
 fn delay(tim6: &tim6::RegisterBlock, ms: u16) {
-    const K: u16 = 3; // this value needs to be tweaked
-    for _ in 0..(K * ms) {
-        aux9::nop()
-    }
+    // Busy waiting
+
+    // Set the timer to go off in `ms` ticks
+    // 1 tick = 1ms
+    tim6.arr.write(|w| w.arr().bits(ms));
+
+    // The CEN register can be used to enable to the counter
+    tim6.cr1.modify(|_, w| w.cen().set_bit());
+
+    // Wait until the alarm goes of (the `UIF` bit of the status register (`SR`))
+    while !tim6.sr.read().uif().bit_is_set() {} // Waiting until some condition is met (i.e. `UIF` becomes `1`), is called busy waiting
+
+    // CLear teh update event flag (set `UIF` to `0`)
+    tim6.sr.modify(|_, w| w.uif().clear_bit());
 }
 
 #[entry]
@@ -20,6 +30,7 @@ fn main() -> ! {
 
 
     // Timer initialization
+
     // Power the `TIM6` bit to 1, in the APB1ENR register of the RCC register block
     rcc.apb1enr.modify(|_, w| w.tim6en().set_bit());
 
