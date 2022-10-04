@@ -10,9 +10,12 @@ fn main() -> ! {
 
     // Send a single character (one byte) by writing to the `TDR` register.
     // This causes the `USART` peripheral to send one byte of information through the serial interface
-    usart1
-        .tdr
-        .write(|w| w.tdr().bits(u16::from(b'X')) );
+    for byte in b"The quick brown fox jumps over the lazy dog.".iter() {
+        usart1
+            .tdr
+            .write(|w| w.tdr().bits(u16::from(*byte)) );
+    }
+    
 
     loop {}
 }
