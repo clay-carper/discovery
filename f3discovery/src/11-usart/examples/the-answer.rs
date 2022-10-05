@@ -22,12 +22,13 @@ macro_rules! uprintln {
     };
 }
 
+#[allow(dead_code)]
 struct SerialPort {
     usart1: &'static mut usart1::RegisterBlock,
 }
 
 impl fmt::Write for SerialPort {
-    fn write_str(&mut self, s: &str) -> fmt::Result {
+    fn write_str(&mut self, _s: &str) -> fmt::Result {
         // TODO implement this
         // hint: this will look very similar to the previous program
         Ok(())

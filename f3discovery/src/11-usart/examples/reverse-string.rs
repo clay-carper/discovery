@@ -8,7 +8,7 @@ use heapless::Vec;
 
 #[entry]
 fn main() -> ! {
-    let (usart1, _mono_timer, _itm) = aux11::init();
+    let (_usart1, _mono_timer, _itm) = aux11::init();
 
     // A buffer with 32 bytes of capacity
     let mut buffer: Vec<u8, 32> = Vec::new();
