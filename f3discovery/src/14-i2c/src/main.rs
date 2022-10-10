@@ -8,9 +8,12 @@ use aux14::{entry, iprint, iprintln, prelude::*};
 // Slave address
 const MAGNETOMETER: u16 = 0b0011_1100;
 
+// Addresses of the magnetometer's registers.
+const WHO_AM_I_M: u8 = 0x4F;
+
 // Addresses of the magnetometer's registers
-const OUT_X_H_M: u8 = 0x03;
-const IRA_REG_M: u8 = 0x0A;
+const _OUT_X_H_M: u8 = 0x03;
+const _IRA_REG_M: u8 = 0x0A;
 
 #[entry]
 fn main() -> ! {
@@ -32,8 +35,8 @@ fn main() -> ! {
         // Wait until we can send more data
         while i2c1.isr.read().txis().bit_is_clear() {}
 
-        // Send the address of the register that we want to read: IRA_REG_M
-        i2c1.txdr.write(|w| w.txdata().bits(IRA_REG_M));
+        // Send the address of the register that we want to read: WHO_AM_I_M
+        i2c1.txdr.write(|w| w.txdata().bits(WHO_AM_I_M));
 
         // Wait until the previous byte has been transmitted
         while i2c1.isr.read().tc().bit_is_clear() {}
@@ -59,8 +62,8 @@ fn main() -> ! {
         i2c1.rxdr.read().rxdata().bits()
     };
 
-    // Expected output: 0x0A - 0b01001000
-    iprintln!(&mut itm.stim[0], "0x{:02X} - 0b{:08b}", IRA_REG_M, byte);
+    // Expected output: 0x0A - 0b01000000(64)
+    iprintln!(&mut itm.stim[0], "0x{:02X} - 0b{:08b}", WHO_AM_I_M, byte);
 
     loop {}
 }
